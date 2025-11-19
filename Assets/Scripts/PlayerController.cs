@@ -24,10 +24,6 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 moveValue = move.ReadValue<Vector2>();
         rb.linearVelocity = moveValue * moveSpeed;
-        if (move.IsPressed())
-        {
-            Debug.Log("Move Pressed! moveValue: " + moveValue);
-        }
 
         if (jump.IsPressed() && isGrounded)
         {
