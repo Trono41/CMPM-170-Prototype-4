@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
@@ -11,9 +12,13 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     public float moveSpeed;
     public float jumpForce;
-    public float dashForce;
+    public float dashSpeed;
+    public float dashCooldown;
+    public float dashDuration;
     float direction;
+    int dashCooldownRemaining;
     bool isGrounded = true;
+    bool isDashing = false;
     bool canDash = true;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -28,6 +33,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isDashing)
+        {
+            return;
+        }
+
         Vector2 moveValue = move.ReadValue<Vector2>();
         rb.linearVelocity = moveValue * moveSpeed;
         direction = moveValue.x;
@@ -37,16 +47,33 @@ public class PlayerController : MonoBehaviour
             // Debug.Log("Jump pressed!");
         }
 
-        if (dash.IsPressed())
+        if (dash.WasPressedThisFrame() && canDash)
         {
-            if (direction != 0)
-            {
-                rb.AddForceX(dashForce * direction, ForceMode2D.Impulse);
-            }
-            else
-            {
-                rb.AddForceX(dashForce, ForceMode2D.Impulse);
-            }
+            StartCoroutine(Dash(moveValue, moveValue.x));
         }
+    }
+
+    IEnumerator Dash(Vector2 movement, float direction)
+    {
+        canDash = false;
+        isDashing = true;
+        Debug.Log("Dashing!");
+
+        if (direction != 0)
+        {
+            rb.linearVelocity = dashSpeed * movement;
+        }
+        else
+        {
+            rb.linearVelocity = new Vector2(dashSpeed, 0f);
+        }
+        
+        yield return new WaitForSeconds(dashDuration);
+        
+        isDashing = false;
+
+        yield return new WaitForSeconds(dashCooldown);
+
+        canDash = true;
     }
 }
