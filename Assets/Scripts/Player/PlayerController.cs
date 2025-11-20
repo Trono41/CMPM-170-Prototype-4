@@ -16,12 +16,12 @@ public class PlayerController : MonoBehaviour
     public float dashCooldown;
     public float dashDuration;
     float direction;
-    int dashCooldownRemaining;
+    int jumpCount = 0;
+    int maxJumps = 2;
     bool isGrounded = true;
     bool isDashing = false;
     bool canDash = true;
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         move = InputSystem.actions.FindAction("Move");
@@ -30,21 +30,29 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (isDashing)
-        {
             return;
-        }
 
         Vector2 moveValue = move.ReadValue<Vector2>();
-        rb.linearVelocity = moveValue * moveSpeed;
+        rb.linearVelocity = new Vector2(moveValue.x * moveSpeed, rb.linearVelocity.y);
         direction = moveValue.x;
 
-        if (jump.IsPressed() && isGrounded)
+        if (Mathf.Abs(rb.linearVelocity.y) < 0.01f)
         {
-            // Debug.Log("Jump pressed!");
+            isGrounded = true;
+            jumpCount = 0;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+
+        if (jump.WasPressedThisFrame() && jumpCount < maxJumps)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            jumpCount++;
         }
 
         if (dash.WasPressedThisFrame() && canDash)
@@ -57,23 +65,15 @@ public class PlayerController : MonoBehaviour
     {
         canDash = false;
         isDashing = true;
-        Debug.Log("Dashing!");
 
         if (direction != 0)
-        {
-            rb.linearVelocity = dashSpeed * movement;
-        }
+            rb.linearVelocity = movement * dashSpeed;
         else
-        {
             rb.linearVelocity = new Vector2(dashSpeed, 0f);
-        }
-        
+
         yield return new WaitForSeconds(dashDuration);
-        
         isDashing = false;
-
         yield return new WaitForSeconds(dashCooldown);
-
         canDash = true;
     }
 }
