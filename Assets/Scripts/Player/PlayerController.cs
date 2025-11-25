@@ -3,22 +3,22 @@ using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     InputAction move;
     InputAction jump;
     InputAction dash;
+    InputAction reset;
     Rigidbody2D rb;
     public float moveSpeed;
     public float jumpForce;
     public float dashSpeed;
     public float dashCooldown;
     public float dashDuration;
-    float direction;
     int jumpCount = 0;
     int maxJumps = 2;
-    bool isGrounded = true;
     bool isDashing = false;
     bool canDash = true;
 
@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
         move = InputSystem.actions.FindAction("Move");
         jump = InputSystem.actions.FindAction("Jump");
         dash = InputSystem.actions.FindAction("Dash");
+        reset = InputSystem.actions.FindAction("reset");
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -37,16 +38,10 @@ public class PlayerController : MonoBehaviour
 
         Vector2 moveValue = move.ReadValue<Vector2>();
         rb.linearVelocity = new Vector2(moveValue.x * moveSpeed, rb.linearVelocity.y);
-        direction = moveValue.x;
 
         if (Mathf.Abs(rb.linearVelocity.y) < 0.01f)
         {
-            isGrounded = true;
             jumpCount = 0;
-        }
-        else
-        {
-            isGrounded = false;
         }
 
         if (jump.WasPressedThisFrame() && jumpCount < maxJumps)
@@ -58,6 +53,11 @@ public class PlayerController : MonoBehaviour
         if (dash.WasPressedThisFrame() && canDash)
         {
             StartCoroutine(Dash(moveValue, moveValue.x));
+        }
+
+        if (reset.WasPressedThisFrame())
+        {
+            ResetScene();
         }
     }
 
@@ -75,5 +75,10 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+    void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
