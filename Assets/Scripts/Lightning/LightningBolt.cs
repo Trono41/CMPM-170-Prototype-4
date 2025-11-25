@@ -25,6 +25,7 @@ namespace Lightning
         {
             if (other.TryGetComponent(out PlayerHealth health))
             {
+                Debug.Log("Dealing damage to Player!");
                 health.TakeDamage(damage);
             }
         }
