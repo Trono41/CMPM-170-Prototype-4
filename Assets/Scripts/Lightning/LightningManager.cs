@@ -74,7 +74,8 @@ public class LightningManager : MonoBehaviour
         float randX = Random.Range(b.min.x, b.max.x);
 
         // Spawn directly above the top of the collider
-        float spawnY = b.max.y + yOffset;
+        float spriteHeight = indicator.GetComponent<SpriteRenderer>().bounds.size.y;
+        float spawnY = b.max.y + (spriteHeight * 0.5f);
 
         return new Vector3(randX, spawnY, 0);
     }
