@@ -11,7 +11,7 @@ public class LightningIndicator : MonoBehaviour
     private bool _flip = true;
 
     public LightningManager caller;
-    private float _lifespan = 3f;
+    private float _lifespan = 1f;
     
     void Start()
     {
@@ -25,6 +25,7 @@ public class LightningIndicator : MonoBehaviour
         float time = Time.unscaledTime;
         if (time > _lifespan)
         { 
+            caller.LightningStrike(gameObject.transform.position);
             Destroy(gameObject);
         }
     }
@@ -48,6 +49,5 @@ public class LightningIndicator : MonoBehaviour
     private void OnDestroy()
     {
         StopAllCoroutines();
-        caller.LightningStrike(gameObject.transform.position);
     }
 }

@@ -23,6 +23,7 @@ namespace Lightning
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            
             if (other.TryGetComponent(out PlayerHealth health))
             {
                 Debug.Log("Dealing damage to Player!");
