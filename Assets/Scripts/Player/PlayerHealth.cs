@@ -1,8 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
     private float _currentHealth;
+    private bool _isInvincible = false;
     [SerializeField] private float maxHealth = 30f;
     [SerializeField] private GameObject lossText;
 
@@ -21,6 +23,18 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        _currentHealth -= damage;
+        if (!_isInvincible)
+        {
+            _currentHealth -= damage;
+        }
+    }
+
+    public IEnumerator BecomeInvincibleTemporarily(float time)
+    {
+        _isInvincible = true;
+
+        yield return new WaitForSeconds(time);
+
+        _isInvincible = false;
     }
 }

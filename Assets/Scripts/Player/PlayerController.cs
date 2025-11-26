@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     InputAction dash;
     InputAction reset;
     Rigidbody2D rb;
+    PlayerHealth health;
     public float moveSpeed;
     public float jumpForce;
     public float dashSpeed;
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
         dash = InputSystem.actions.FindAction("Dash");
         reset = InputSystem.actions.FindAction("reset");
         rb = GetComponent<Rigidbody2D>();
+        health = GetComponent<PlayerHealth>();
     }
 
     void Update()
@@ -53,6 +55,7 @@ public class PlayerController : MonoBehaviour
         if (dash.WasPressedThisFrame() && canDash)
         {
             StartCoroutine(Dash(moveValue, moveValue.x));
+            StartCoroutine(health.BecomeInvincibleTemporarily(dashDuration));
         }
 
         if (reset.WasPressedThisFrame())
@@ -63,6 +66,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Dash(Vector2 movement, float direction)
     {
+        Debug.Log("Dashing!");
         canDash = false;
         isDashing = true;
 
