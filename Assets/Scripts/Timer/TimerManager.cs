@@ -1,5 +1,5 @@
-using Systems.Collections;
 using UnityEngine;
+using TMPro;
 
 public class TimerManager : MonoBehaviour
 {
@@ -8,25 +8,34 @@ public class TimerManager : MonoBehaviour
     
     LightningManager lightning;
     [SerializeField] private float timer;
-    [SerializeField] private GameObject timerDisplay;
+    [SerializeField] private TextMeshProUGUI timerDisplay;
+    [SerializeField] private float updatedLightingStrikeCount;
+    [SerializeField] private float updatedLightningStrikeCycleTime;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         lightning = LightningManager.Instance;
-        StartCoroutine(Timer(timer));
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
+        timer -= Time.deltaTime;
+        if ((int)timer % 60 < 10)
+        {
+            timerDisplay.text = (int)timer / 60 + ":0" + (int)timer % 60;
+        }
+        else
+        {
+            timerDisplay.text = (int)timer / 60 + ":" + (int)timer % 60;
+        }
 
-    IEnumerator Timer(float time)
-    {
-        timerDisplay.text = time.ToString();
-
-        yield return timer;
+        if (timer <= 0)
+        {
+            timer = 0;
+            lightning.lightningStrikesPerCycle = updatedLightingStrikeCount;
+            lightning.lightningStrikeCycleTime = updatedLightningStrikeCycleTime;
+        }
     }
 }
