@@ -82,8 +82,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.6603774, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 5e3660acf1b724e5e8a0f281c3da86f7, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -143,7 +143,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TornadoController
   moveSpeed: 10
-  moveDirection: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  groundCheckDistance: 0.6
+  verticalSpawnOffset: 1
+  horizontalReleaseForce: 1000
 --- !u!114 &-3913973936465549327
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,11 +13,14 @@ public class PlayerController : MonoBehaviour
     InputAction reset;
     Rigidbody2D rb;
     PlayerHealth health;
+    SpriteRenderer sr;
     public float moveSpeed;
     public float jumpForce;
     public float dashSpeed;
     public float dashCooldown;
     public float dashDuration;
+    public Sprite idleSprite;
+    public Sprite jumpSprite;
     int jumpCount = 0;
     int maxJumps = 2;
     bool isDashing = false;
@@ -31,6 +34,7 @@ public class PlayerController : MonoBehaviour
         reset = InputSystem.actions.FindAction("reset");
         rb = GetComponent<Rigidbody2D>();
         health = GetComponent<PlayerHealth>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -41,15 +45,22 @@ public class PlayerController : MonoBehaviour
         Vector2 moveValue = move.ReadValue<Vector2>();
         rb.linearVelocity = new Vector2(moveValue.x * moveSpeed, rb.linearVelocity.y);
 
+        if (moveValue.x > 0.1f) sr.flipX = true;
+        if (moveValue.x < -0.1f) sr.flipX = false;
+
         if (Mathf.Abs(rb.linearVelocity.y) < 0.01f)
         {
             jumpCount = 0;
+
+            sr.sprite = idleSprite;
         }
 
         if (jump.WasPressedThisFrame() && jumpCount < maxJumps)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             jumpCount++;
+
+            sr.sprite = jumpSprite;
         }
 
         if (dash.WasPressedThisFrame() && canDash)
