@@ -1,18 +1,29 @@
+using System.Collections;
 using UnityEngine;
 
 public class TornadoController : MonoBehaviour
 {
     public float moveSpeed = 5f;
-
-    public LayerMask groundLayer;
-    public float groundCheckDistance = 0.6f;
-    public float verticalSpawnOffset = 1.0f;
-
     public float horizontalReleaseForce = 1000f;
 
-    // Changed from onlyOwner to capturedPlayer for clarity
+    public LayerMask groundLayer;
+    public float groundCheckDistance = 1f;
+    public float destroyDelayAfterLeavingGround = 1f;
+
+    public Transform leftBound;
+    public Transform rightBound;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip windSound;
+    [SerializeField] private AudioSource audioSource;
+
     private Transform capturedPlayer;
     private Transform playerTarget;
+    private Rigidbody2D playerRb;
+    private PlayerController playerController;
+    private float originalGravityScale;
+    private bool hasLeftGround = false;
+    private float currentMoveDirection = 0f;
 
     void Start()
     {
@@ -25,16 +36,40 @@ public class TornadoController : MonoBehaviour
 
     void Update()
     {
+        if (leftBound != null && rightBound != null)
+        {
+            if (transform.position.x < leftBound.position.x || transform.position.x > rightBound.position.x)
+            {
+                ReleasePlayer();
+                Destroy(gameObject);
+                return;
+            }
+        }
+
+        if (!IsOnGround())
+        {
+            if (!hasLeftGround)
+            {
+                hasLeftGround = true;
+                StartCoroutine(DestroyAfterDelay());
+            }
+        }
+        else
+        {
+            hasLeftGround = false;
+        }
+
         float moveDirection = 0f;
 
         if (capturedPlayer == null && playerTarget != null)
         {
             float direction = playerTarget.position.x - transform.position.x;
             moveDirection = direction > 0 ? 1f : -1f;
+            currentMoveDirection = moveDirection;
         }
         else if (capturedPlayer != null)
         {
-            moveDirection = 1f;
+            moveDirection = currentMoveDirection;
         }
 
         if (moveDirection != 0f)
@@ -45,35 +80,93 @@ public class TornadoController : MonoBehaviour
         }
     }
 
-    // NEW LOGIC: Use OnTriggerStay2D to enforce capture
-    private void OnTriggerStay2D(Collider2D other)
+    private IEnumerator DestroyAfterDelay()
     {
-        if (other.CompareTag("Player"))
-        {
-            // If the player's parent is NOT this tornado, re-parent them.
-            // This prevents the player from walking out of the trigger zone.
-            if (other.transform.parent != this.transform)
-            {
-                capturedPlayer = other.transform;
-                capturedPlayer.parent = this.transform;
+        yield return new WaitForSeconds(destroyDelayAfterLeavingGround);
 
-                Rigidbody2D playerRb = capturedPlayer.GetComponent<Rigidbody2D>();
-                if (playerRb != null)
-                {
-                    // Clear velocity whenever they are re-captured/held
-                    playerRb.linearVelocity = Vector2.zero;
-                }
-            }
+        if (!IsOnGround())
+        {
+            ReleasePlayer();
+            Destroy(gameObject);
         }
     }
 
-    // Removed the redundant OnTriggerEnter2D method
+    private bool IsOnGround()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
+        return hit.collider != null;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && capturedPlayer == null && other.transform.parent == null)
+        {
+            capturedPlayer = other.transform;
+            playerRb = capturedPlayer.GetComponent<Rigidbody2D>();
+            playerController = capturedPlayer.GetComponent<PlayerController>();
+
+            if (playerRb != null)
+            {
+                originalGravityScale = playerRb.gravityScale;
+                playerRb.linearVelocity = Vector2.zero;
+                playerRb.gravityScale = 0f;
+            }
+
+            if (playerController != null)
+            {
+                playerController.enabled = false;
+            }
+
+            capturedPlayer.parent = this.transform;
+
+            PlayWindSound();
+        }
+    }
 
     private void OnDestroy()
+    {
+        ReleasePlayer();
+    }
+
+    private void ReleasePlayer()
     {
         if (capturedPlayer != null)
         {
             capturedPlayer.parent = null;
+
+            if (playerRb != null)
+            {
+                playerRb.gravityScale = originalGravityScale;
+            }
+
+            if (playerController != null)
+            {
+                playerController.enabled = true;
+            }
+
+            capturedPlayer = null;
+            playerRb = null;
+            playerController = null;
+
+            StopWindSound();
+        }
+    }
+
+    private void PlayWindSound()
+    {
+        if (audioSource != null && windSound != null)
+        {
+            audioSource.clip = windSound;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+    }
+
+    private void StopWindSound()
+    {
+        if (audioSource != null)
+        {
+            audioSource.Stop();
         }
     }
 }
