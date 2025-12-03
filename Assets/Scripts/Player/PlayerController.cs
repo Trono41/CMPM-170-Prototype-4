@@ -1,15 +1,15 @@
 using System.Collections;
 using Unity.VisualScripting;
-using UnityEditor.ShaderGraph.Internal;
+// using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    InputAction move;
-    InputAction jump;
-    InputAction dash;
+    public InputAction move;
+    public InputAction jump;
+    public InputAction dash;
     InputAction reset;
     Rigidbody2D rb;
     PlayerHealth health;
@@ -77,7 +77,6 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Dash(Vector2 movement, float direction)
     {
-        Debug.Log("Dashing!");
         canDash = false;
         isDashing = true;
 

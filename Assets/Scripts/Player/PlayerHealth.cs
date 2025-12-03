@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour
     private bool _isInvincible = false;
     [SerializeField] private float maxHealth = 30f;
     [SerializeField] private GameObject lossText;
+    public bool lose = false;
 
     void Start()
     {
@@ -18,6 +19,7 @@ public class PlayerHealth : MonoBehaviour
         if (_currentHealth <= 0)
         {
             lossText.SetActive(true);
+            lose = true;
         }
     }
 
@@ -27,6 +29,11 @@ public class PlayerHealth : MonoBehaviour
         {
             _currentHealth -= damage;
         }
+    }
+
+    public void BecomeInvinciblePermanently()
+    {
+        _isInvincible = true;
     }
 
     public IEnumerator BecomeInvincibleTemporarily(float time)

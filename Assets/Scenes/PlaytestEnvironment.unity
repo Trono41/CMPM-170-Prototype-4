@@ -1363,6 +1363,7 @@ MonoBehaviour:
   timerDisplay: {fileID: 1882586367}
   updatedLightingStrikeCount: 5
   updatedLightningStrikeCycleTime: 3
+  goalObject: {fileID: 1265294564}
 --- !u!4 &1214210964
 Transform:
   m_ObjectHideFlags: 0
@@ -1467,6 +1468,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Objective
   winText: {fileID: 1105146795}
+  player: {fileID: 1867368207}
+  win: 0
 --- !u!61 &1265294566
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2045,7 +2048,7 @@ GameObject:
   - component: {fileID: 1867368212}
   - component: {fileID: 1867368213}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2201,6 +2204,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8219e13980c8e3f40830e58708d2e70b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  move:
+    m_Name: Move
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 42313d78-8c7d-4343-9383-b9dbb3d49e3a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  jump:
+    m_Name: Jump
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 2ae3e5ae-4dd2-4405-b401-8a6626446c2d
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  dash:
+    m_Name: Dash
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 28f1ed2f-f4fd-4879-903e-3f5146c07f06
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   moveSpeed: 20
   jumpForce: 15
   dashSpeed: 60
