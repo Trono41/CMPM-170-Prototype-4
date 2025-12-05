@@ -1364,6 +1364,7 @@ MonoBehaviour:
   updatedLightingStrikeCount: 5
   updatedLightningStrikeCycleTime: 3
   goalObject: {fileID: 1265294564}
+  player: {fileID: 1867368207}
 --- !u!4 &1214210964
 Transform:
   m_ObjectHideFlags: 0
@@ -2048,7 +2049,7 @@ GameObject:
   - component: {fileID: 1867368212}
   - component: {fileID: 1867368213}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Capsule
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2208,7 +2209,7 @@ MonoBehaviour:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 42313d78-8c7d-4343-9383-b9dbb3d49e3a
+    m_Id: b94d2f83-868c-4369-a5b9-ec71897acf97
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
@@ -2217,7 +2218,7 @@ MonoBehaviour:
     m_Name: Jump
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 2ae3e5ae-4dd2-4405-b401-8a6626446c2d
+    m_Id: 42bf4bed-02cf-4dd2-a591-c71c9185f18c
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
@@ -2226,7 +2227,7 @@ MonoBehaviour:
     m_Name: Dash
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 28f1ed2f-f4fd-4879-903e-3f5146c07f06
+    m_Id: 3dba307e-2f97-45e5-bb38-f340d16c43fa
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
@@ -2252,6 +2253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 30
   lossText: {fileID: 821350725}
+  lose: 0
 --- !u!1 &1882586365
 GameObject:
   m_ObjectHideFlags: 0
